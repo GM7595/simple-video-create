@@ -7,8 +7,8 @@ AUDIO_EXTS = {".mp3", ".wav", ".flac", ".m4a", ".ogg", ".aac"}
 IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tiff"}
 MP4_COPY_OK = {"aac", "mp3", "alac"}          # codecs safe to copy
 
-EVEN_FILTER = "scale='trunc(iw/2)*2:trunc(ih/2)*2'"        # fixes odd W/H :contentReference[oaicite:0]{index=0}
-# EVEN_FILTER = "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:-1:-1"
+EVEN_FILTER = "scale='trunc(iw/2)*2:trunc(ih/2)*2'"        # fixes odd W/H
+# EVEN_FILTER = "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:-1:-1" # force hd
 
 
 # ─────────────────── Finder picker ────────────────────
@@ -55,12 +55,12 @@ def mux(audio, image):
         "-i", audio,
         "-vf", EVEN_FILTER,
         "-c:v", "libx264", "-tune", "stillimage",
-        "-pix_fmt", "yuv420p",                       # web-safe video  :contentReference[oaicite:1]{index=1}
+        "-pix_fmt", "yuv420p", # web-safe video
     ]
     cmd += ["-c:a", "aac", "-b:a", "192k"] if reencode else ["-c:a", "copy"]
     cmd += ["-shortest", "-progress", "pipe:1", "-nostats", str(out)]
 
-    print("⇢", " ".join(cmd))                       # human-readable cmd
+    print("⇢", " ".join(cmd)) # human-readable cmd
 
     with subprocess.Popen(cmd, text=True,
                           stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
